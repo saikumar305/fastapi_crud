@@ -37,3 +37,31 @@ def create_user_post(db: Session, post: schemas.PostCreate, user_id: int):
 
 def get_user_posts(db:Session , user_id: int):
     return db.query(models.Post).filter(models.Post.author_id == user_id).all()
+
+
+def delete_user_blog(db:Session , user_id:int , blog_id:int):
+    db_item = db.query(models.Post).filter(models.Post.author_id == user_id and models.Post.id == blog_id).first()
+    if not db_item:
+        return {
+            "records": [], 
+            "message" : "No record found"
+        }
+    res = db.delete(db_item)
+    db.commit()
+    return res
+
+
+def update_user_blog(db:Session , post: schemas.PostCreate , user_id:int , blog_id:int):
+    db_item = db.query(models.Post).filter(models.Post.author_id == user_id and models.Post.id == blog_id).first()
+
+    if post.title:
+        db_item.title = post.title 
+    db_item.description = post.description
+
+    db.commit()
+    db.refresh(db_item)
+
+    return db_item
+
+
+

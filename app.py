@@ -57,7 +57,18 @@ def get_user_posts(user_id: int , db:Session = Depends(get_db)):
     return crud.get_user_posts(db, user_id)
     
 
+@app.delete('/users/{user_id}/posts/{blog_id}')
+def delete_user_post(user_id:int , blog_id:int, db:Session = Depends(get_db)):
+    return crud.delete_user_blog(db , user_id, blog_id)
+
+@app.patch('/users/{user_id}/posts/{blog_id}', response_model=schemas.Post)
+def update_user_post(user_id: int ,blog_id:int,post : schemas.PostCreate , db:Session = Depends(get_db)):
+    return crud.update_user_blog(db,post, user_id, blog_id)
+
 @app.get('/posts', response_model=List[schemas.Post])
 def get_all_posts(skip:int = 0 ,limit:int=100, db:Session = Depends(get_db)):
     return crud.get_posts(db, skip, limit)
+
+
+
 
